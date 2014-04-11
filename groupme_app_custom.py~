@@ -53,4 +53,4 @@ If a folder by that name already exists, this will update the folder with any ne
 # so you have to download entire transcipt, scrape it for
 # image URLs, then download each one of the images from those URLs into the
 # newly created folder.
-# Scraper should check for urls with image file endings
+# 
