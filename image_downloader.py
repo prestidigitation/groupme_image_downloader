@@ -1,6 +1,7 @@
 import os
 import re
 import urllib
+import httplib
 
 # Need parser that searches txt file for addresses beginning with http://i.groupme.com/
 
@@ -28,6 +29,29 @@ for line in transcript:
 #    else :
         # pass string to current handler
 
+## Fetches list of headers from URL
+#  @param
+#  @return 
+def headers_fetcher(domain_url, path_url):
+    connection = httplib.HTTPConnection(domain_url)
+    connection.request("HEAD", path_url)
+    res = connection.getresponse()
+    headers = res.getheaders()
+    return headers
+
+## Searches list of headers for an image content type, then returns string if found
+#  @param headers_list list of headers
+#  @return item tuple that includes 'content-type' string
+def content_type_parser(headers_list):
+    for item in headers_list:
+        if 'content-type' in item:
+            if item[1].startswith("image"):
+                return item[1]
+
+example_domain = "sstatic.net"
+example_path = "/stackoverflow/img/favicon.ico"
+content_type = content_type_parser(headers_fetcher(example_domain, example_path))
+print(content_type)
 
 
 image_id = 'e3f9d0c0ac520130022766900689df55'
@@ -35,10 +59,11 @@ url = 'http://i.groupme.com/' + image_id
 image = urllib.URLopener()
 script_directory = os.path.dirname(os.path.abspath(__file__))
 
-# Checks if new image directory already exists, creates it if it doesn't
+## Checks if new image directory exists, creates one if it doesn't
+# 
 if not os.path.exists(script_directory + '/images/'):
     os.makedirs(script_directory + '/images/')
 
 image.retrieve(url, script_directory + '/images/' + image_id + '.jpg')
 
-
+# (?P<url>http?://[^\s]+)
