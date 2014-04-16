@@ -1,7 +1,10 @@
 import os
 import re
 import urllib
+
+import imghdr
 import httplib
+import cStringIO
 
 # Need parser that searches txt file for addresses beginning with http://i.groupme.com/
 
@@ -29,30 +32,25 @@ for line in transcript:
 #    else :
         # pass string to current handler
 
-## Fetches list of headers from URL
-#  @param
-#  @return 
-def headers_fetcher(domain_url, path_url):
-    connection = httplib.HTTPConnection(domain_url)
-    connection.request("HEAD", path_url)
-    res = connection.getresponse()
-    headers = res.getheaders()
-    return headers
+example_domain = 'www.ovguide.com'
+example_path = '/img/global/ovg_logo.png'
 
-## Searches list of headers for an image content type, then returns string if found
-#  @param headers_list list of headers
-#  @return item tuple that includes 'content-type' string
-def content_type_parser(headers_list):
-    for item in headers_list:
-        if 'content-type' in item:
-            if item[1].startswith("image"):
-                return item[1]
+## Checks url to see if it's an image.
+#  @param domain_url http domain of a potential image's url
+#  @param path_url path of potential image's url that gets appended to a domain url
+#  @return is_image_bool Boolean value for whether url contains an image or not
+def is_image(domain_url, path_url):
+    domain_fetcher = httplib.HTTPConnection(domain_url, timeout = 60)
+    domain_fetcher.request('GET', path_url)
+    r1 = domain_fetcher.getresponse()
 
-example_domain = "sstatic.net"
-example_path = "/stackoverflow/img/favicon.ico"
-content_type = content_type_parser(headers_fetcher(example_domain, example_path))
-print(content_type)
+    image_file_obj = cStringIO.StringIO(r1.read())
+    what_type = imghdr.what(image_file_obj)
 
+    is_image_bool = False
+    if what_type != None:
+        is_image_bool = True
+    return is_image_bool
 
 image_id = 'e3f9d0c0ac520130022766900689df55'
 url = 'http://i.groupme.com/' + image_id
