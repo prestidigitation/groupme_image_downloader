@@ -6,9 +6,6 @@ import imghdr
 import httplib
 import cStringIO
 
-example_domain = 'www.ovguide.com'
-example_path = '/img/global/ovg_logo.png'
-
 ## Checks if new image directory exists, creates one if it doesn't
 #  @param N/a
 #  @return N/a
@@ -47,6 +44,8 @@ def file_parser(transcript_file):
             #if is_image(match):
             print(match.group(0))
 
+example_domain = 'www.ovguide.com'
+example_path = '/img/global/ovg_logo.png'
 file_name = "transcript-5815609.txt"
 transcript = open(file_name, "r")
 image_id = 'e3f9d0c0ac520130022766900689df55'
