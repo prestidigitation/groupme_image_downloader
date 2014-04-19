@@ -13,6 +13,7 @@ example_path = '/img/global/ovg_logo.png'
 #  @param N/a
 #  @return N/a
 def directory_exists():
+    script_directory = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(script_directory + '/images/'):
         os.makedirs(script_directory + '/images/')
 
@@ -51,7 +52,6 @@ transcript = open(file_name, "r")
 image_id = 'e3f9d0c0ac520130022766900689df55'
 url = 'http://i.groupme.com/' + image_id
 image = urllib.URLopener()
-script_directory = os.path.dirname(os.path.abspath(__file__))
 
 
 file_parser(transcript)
