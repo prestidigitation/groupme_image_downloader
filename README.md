@@ -1,4 +1,4 @@
-groupme_image_downloader
+image_downloader
 ========================
 
 Python app for parsing a text file for urls, then downloading all images from those urls.

@@ -81,7 +81,6 @@ def img_downloader(url):
 
 transcript_name = input('Enter transcript to be parsed: ')
 transcript = open(transcript_name, "r")
-
 file_parser(transcript)
 transcript.close()
 print("Done.")

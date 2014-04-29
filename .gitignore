@@ -1,18 +1,17 @@
 # gedit autosaved files
 *~
 
-# Test image folder
-/images/
-
 # Test txt list of image urls
-/image_downloader/image_urls.txt
+image_urls.txt
 
 # Test txt list of non-image urls
-/image_downloader/non_image_urls.txt
+non_image_urls.txt
 
 # Downloaded image folder
-/image_downloader/images/
+/images/
 
 # Test text file
-/image_downloader/transcript-5815609.txt
+transcript-5815609.txt
 
+# PyCharm files
+.idea
