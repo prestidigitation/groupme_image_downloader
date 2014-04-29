@@ -12,3 +12,7 @@
 
 # Downloaded image folder
 /image_downloader/images/
+
+# Test text file
+/image_downloader/transcript-5815609.txt
+

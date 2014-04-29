@@ -1,4 +1,5 @@
 groupme_image_downloader
 ========================
 
-Python app for downloading all images from a GroupMe group's transcript using the GroupMe API
+Python app for parsing a text file for urls, then downloading all images from those urls.
+Saves parsed image urls into one text file and non-image urls into another text file.
