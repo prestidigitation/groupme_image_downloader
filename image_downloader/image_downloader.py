@@ -2,42 +2,36 @@ from os import makedirs
 from os.path import (dirname, exists, abspath)
 from re import search
 from urllib.error import (HTTPError, URLError)
-from urllib.request import urlopen
+from urllib.request import (urlopen, urlretrieve)
 from imghdr import what
 from socket import timeout
 
 
-## Checks if new image directory exists, creates one if it doesn't.
-def directory_exists():
-    script_directory = dirname(abspath(__file__))
-    if not exists(script_directory + '/images/'):
-        makedirs(script_directory + '/images/')
-
-
-## Parses a transcript file for urls.
-#  @param transcript_file name of transcript file to be parsed
+## Parses a file for urls.
+#  @param file_name name of file to be parsed
 #  @return string of matched url
-def file_parser(transcript_file):
-    for line in transcript_file:
-        # Do string processing here
+def file_parser(file_name):
+    for line in file_name:
         match = search('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', line)
+        current_match = match.group(0)
         if match is not None:
-            print(match.group(0))  # TODO Remove when done testing.
             try:
-                print(str(is_image(match.group(0))))  # TODO Remove when done testing.
-                if is_image(match.group(0)):
-                    img_url_writer(match.group(0))
-                    #img_downloader()
+                if is_image(current_match):
+                    img_url_writer(current_match)
+                    img_downloader(current_match)
                 else:
-                    non_img_url_writer(match.group(0))
+                    non_img_url_writer(current_match)
             except HTTPError as err:
-                print("Bad URL or timeout: {0}".format(err))
+                print(current_match + '\n' + "Bad URL or timeout: {0}".format(err))
                 continue
             except URLError as err:
-                print("Bad URL or timeout: {0}".format(err))
+                print(current_match + '\n' + "Bad URL or timeout: {0}".format(err))
                 continue
             except timeout as err:
-                print("Timeout error: {0}".format(err))
+                print(current_match + '\n' + "Timeout error: {0}".format(err))
+                continue
+            except IsADirectoryError as err:
+                print("IsADirectoryError: {0}".format(err))
                 continue
 
 
@@ -70,13 +64,25 @@ def non_img_url_writer(url_string):
     urls.close()
 
 
+## Checks if new image directory exists, creates one if it doesn't.
+def directory_exists():
+    script_directory = dirname(abspath(__file__))
+    if not exists(script_directory + '/images/'):
+        makedirs(script_directory + '/images/')
+
+
 ## Downloads image to folder.
 #  @param img_url url of image to be downloaded.
-def img_downloader(img_url):
-    urlopen(img_url).write()
+def img_downloader(url):
+    directory_exists()
+    transcript_directory = dirname(abspath(__file__))
+    split = url.rsplit('/', 1)
+    urlretrieve(url, transcript_directory + '/images/' + url.rsplit('/', 1)[1])
 
-file_name = 'transcript-5815609.txt'
-transcript = open(file_name, "r")
+
+transcript_name = input('Enter transcript to be parsed: ')
+transcript = open(transcript_name, "r")
 
 file_parser(transcript)
 transcript.close()
+print("Done.")
