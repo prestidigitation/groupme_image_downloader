@@ -1,3 +1,4 @@
+from sys import exit
 from os import makedirs
 from os.path import (dirname, exists, abspath)
 from re import search
@@ -33,7 +34,7 @@ def file_parser(file_name):
             except IsADirectoryError as err:
                 print("IsADirectoryError: {0}".format(err))
                 continue
-        elif match is None:
+        else:
             print("No urls found.")
 
 
@@ -81,8 +82,18 @@ def img_downloader(url):
     urlretrieve(url, transcript_directory + '/images/' + url.rsplit('/', 1)[1])
 
 
-transcript_name = input('Enter transcript to be parsed: ')
-transcript = open(transcript_name, "r")
-file_parser(transcript)
-transcript.close()
+## Opens a text file.
+#  @return transcript Successfully opened text file
+def open_text_file():
+        user_input = input('Enter text file to be parsed: ')
+        try:
+            transcript = open(user_input, "r")
+            return transcript
+        except FileNotFoundError:
+            print('\n' + 'File not found.')
+            exit()
+
+text_file = open_text_file()
+file_parser(text_file)
+text_file.close()
 print("Done.")
