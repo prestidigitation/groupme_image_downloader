@@ -15,3 +15,6 @@ transcript-5815609.txt
 
 # PyCharm files
 .idea
+
+# Test html file to parse
+test.html

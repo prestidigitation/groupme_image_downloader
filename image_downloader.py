@@ -33,6 +33,8 @@ def file_parser(file_name):
             except IsADirectoryError as err:
                 print("IsADirectoryError: {0}".format(err))
                 continue
+        elif match is None:
+            print("No urls found.")
 
 
 ## Checks url to see if it's an image.
