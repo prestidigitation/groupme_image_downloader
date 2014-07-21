@@ -1,17 +1,18 @@
-from sys import exit
+from sys import exit, argv
 from os import makedirs
-from os.path import (dirname, exists, abspath)
+from os.path import dirname, exists, abspath, isabs, isdir
 from re import search
-from urllib.error import (HTTPError, URLError)
-from urllib.request import (urlopen, urlretrieve)
+from urllib.error import HTTPError, URLError, ContentTooShortError
+from urllib.request import urlopen, urlretrieve
 from imghdr import what
 from socket import timeout
 
 
 ## Parses a file for urls.
-#  @param file_name name of file to be parsed
-#  @return string of matched url
+#  @param: file_name - name of file to be parsed
+#  @return: list of valid URLs
 def file_parser(file_name):
+    valid_urls = list()
     for line in file_name:
         match = search('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', line)
         try:
@@ -22,10 +23,7 @@ def file_parser(file_name):
         if match is not None:
             try:
                 if is_image(current_match):
-                    img_url_writer(current_match)
-                    img_downloader(current_match)
-                else:
-                    non_img_url_writer(current_match)
+                    valid_urls.append(current_match)
             except HTTPError as err:
                 print(current_match + '\n' + "Bad URL or timeout: {0}".format(err))
                 continue
@@ -35,16 +33,13 @@ def file_parser(file_name):
             except timeout as err:
                 print(current_match + '\n' + "Timeout error: {0}".format(err))
                 continue
-            except IsADirectoryError as err:
-                print("IsADirectoryError: {0}".format(err))
-                continue
-        else:
-            print("No urls found.")
+
+    return valid_urls
 
 
 ## Checks url to see if it's an image.
-#  @param url Url of a potential image
-#  @return boolean value for whether url contains an image
+#  @param: url - Url of a potential image
+#  @return: boolean value for whether url contains an image
 def is_image(url):
     url_data = urlopen(url, timeout=60).read()
     what_type = what('ignore', url_data)
@@ -52,52 +47,83 @@ def is_image(url):
     is_image_bool = False
     if what_type is not None:
         is_image_bool = True
+
     return is_image_bool
 
 
-## Writes parsed image urls to text file.
-#  @param url_string url string to be appended to text file
-def img_url_writer(url_string):
-    urls = open('image_urls.txt', 'a')
-    urls.write(url_string + '\n')
-    urls.close()
-
-
-## Writes parsed non-image urls to text file.
-#  @param url_string url string to be appended to text file
-def non_img_url_writer(url_string):
-    urls = open('non_image_urls.txt', 'a')
-    urls.write(url_string + '\n')
-    urls.close()
-
-
 ## Checks if new image directory exists, creates one if it doesn't.
-def directory_exists():
-    script_directory = dirname(abspath(__file__))
-    if not exists(script_directory + '/images/'):
-        makedirs(script_directory + '/images/')
+#  @param: t_path - string with path to folder for images
+#  @return: boolean value for whether path to folder is OK
+def check_dir(t_path):
+    if not isabs(t_path):
+        return False
+    if not isdir(t_path):
+        makedirs(t_path)
+
+    return True
 
 
-## Downloads image to folder.
-#  @param img_url url of image to be downloaded.
-def img_downloader(url):
-    directory_exists()
-    transcript_directory = dirname(abspath(__file__))
-    urlretrieve(url, transcript_directory + '/images/' + url.rsplit('/', 1)[1])
+## Downloads images to folder.
+#  @param: t_urls - list of url of image to be downloaded
+#  @param: t_folder - folder for images
+def img_downloader(t_urls, t_folder):
+    images_per_percent = len(t_urls) / 100
+    counter = 0
+    percent = 0
+
+    for url in t_urls:
+        counter += 1
+        path = t_folder + url.rsplit('/', 1)[1]
+        try:
+            urlretrieve(url, path)
+        except URLError as err:
+            print("Failed to download: " + url)
+            print(err.reason)
+            continue
+
+        if counter == images_per_percent:
+            counter = 0
+            percent += 1
+            print(percent + "%")
 
 
 ## Opens a text file.
-#  @return transcript Successfully opened text file
-def open_text_file():
-        user_input = input('Enter text file to be parsed: ')
-        try:
-            transcript = open(user_input, "r")
-            return transcript
-        except FileNotFoundError:
-            print('\n' + 'File not found.')
-            exit()
+#  @param: t_file_path - string with path to the file with URLs
+#  @return: transcript - successfully opened text file
+def open_text_file(t_file_path):
+    transcript = None
+    try:
+        transcript = open(t_file_path, "r")
+    except OSError:
+        print('Failed to open file!')
 
-text_file = open_text_file()
-file_parser(text_file)
-text_file.close()
-print("Done.")
+    return transcript
+
+
+## Main method
+def start():
+    if len(argv) != 2:
+        print("Invalid arguments")
+        exit()
+
+    file = open_text_file(argv[0])
+    if file is None:
+        exit()
+
+    valid_urls = file_parser(file)
+    file.close()
+    if len(valid_urls) <= 0:
+        print("Nothing to download")
+        exit()
+
+    folder_path = argv[1]
+    if not check_dir(folder_path):
+        print("Failed to create folder for images")
+        exit()
+
+    img_downloader(valid_urls, folder_path)
+    print("Done.")
+
+
+if __name__ == '__main__':
+    start()
