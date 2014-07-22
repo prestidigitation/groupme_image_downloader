@@ -5,6 +5,8 @@ from urllib.error import HTTPError, URLError
 from urllib.request import urlopen, urlretrieve
 import imghdr
 from socket import timeout
+import multiprocessing
+import itertools
 
 
 ## Opens a text file.
@@ -81,10 +83,20 @@ def check_dir(t_path):
     return True
 
 
+## Start downloader threads
+def start_download(t_urls, t_folder):
+    cores_num = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(cores_num)
+    pool.map(img_downloader, zip(t_urls, itertools.repeat(t_folder)))
+    pool.close()
+    pool.join()
+
+
 ## Downloads images to folder.
 #  @param: t_urls - list of url of image to be downloaded
 #  @param: t_folder - folder for images
-def img_downloader(t_urls, t_folder):
+def img_downloader(params):
+    t_urls, t_folder = params
     for url in t_urls:
         print(url)
         path = os.path.join(t_folder, url.rsplit('/', 1)[1])
@@ -119,7 +131,7 @@ def start():
         sys.exit()
 
     print("Downloading...")
-    img_downloader(valid_urls, folder_path)
+    start_download(valid_urls, folder_path)
     print("Done.")
 
 
