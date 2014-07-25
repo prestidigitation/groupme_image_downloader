@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/iamantony/image_downloader.svg?branch=master)](https://travis-ci.org/iamantony/image_downloader)
+[![Build Status](https://travis-ci.org/iamantony/image_downloader.svg?branch=master)](https://travis-ci.org/iamantony/image_downloader)  [![Coverage Status](https://coveralls.io/repos/iamantony/image_downloader/badge.png)](https://coveralls.io/r/iamantony/image_downloader)
 
 image_downloader
 ========================
