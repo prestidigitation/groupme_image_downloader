@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/iamantony/image_downloader.svg?branch=master)](https://travis-ci.org/iamantony/image_downloader)
+
 image_downloader
 ========================
 
