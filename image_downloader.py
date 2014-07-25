@@ -15,7 +15,7 @@ def start():
         print("Invalid arguments")
         sys.exit()
 
-    print("Checking...")
+    print(get_local_time_string() + ": Checking...")
     file = open_text_file(sys.argv[1])
     if file is None:
         sys.exit()
@@ -23,17 +23,25 @@ def start():
     valid_urls = file_parser(file)
     file.close()
     if len(valid_urls) <= 0:
-        print("Nothing to download")
+        print(get_local_time_string() + ": Nothing to download")
         sys.exit()
 
     folder_path = sys.argv[2]
     if not check_dir(folder_path):
-        print("Failed to create folder for images")
+        print(get_local_time_string() + ": Failed to create folder for images")
         sys.exit()
 
-    print("Downloading...")
+    print(get_local_time_string() + ": Downloading...")
     start_download(valid_urls, folder_path)
-    print("Done.")
+    print(get_local_time_string() + ": Done.")
+
+
+def get_local_time_string():
+    """ Get string with current date and local time
+    @output: string with date and time
+    """
+
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 
 def open_text_file(t_file_path):
@@ -46,7 +54,7 @@ def open_text_file(t_file_path):
     try:
         transcript = open(t_file_path, "r")
     except OSError:
-        print('Failed to open file!')
+        print(get_local_time_string() + ": Failed to open file!")
 
     return transcript
 
@@ -159,10 +167,10 @@ def img_downloader(t_urls, t_folder):
         try:
             urlretrieve(url, path)
         except Exception:
-            print("Failed to download " + url)
+            print(get_local_time_string() + ": Failed to download " + url)
             continue
 
-        print(url + " downloaded.")
+        print(get_local_time_string() + ": " + url + " downloaded.")
         time.sleep(2)
 
 
