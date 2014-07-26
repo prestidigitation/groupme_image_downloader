@@ -120,7 +120,10 @@ def check_dir(t_path):
     if not os.path.isabs(t_path):
         return False
     if not os.path.isdir(t_path):
-        os.makedirs(t_path)
+        try:
+            os.makedirs(t_path)
+        except OSError:
+            return False
 
     return True
 
