@@ -164,6 +164,7 @@ def img_downloader(t_urls, t_folder):
             urlretrieve(url, path)
         except Exception:
             print(get_local_time_string() + ": Failed to download " + url)
+            os.remove(path)
             continue
 
         print(get_local_time_string() + ": " + url + " downloaded.")
