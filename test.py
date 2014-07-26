@@ -48,6 +48,18 @@ def test_open_file_valid():
     remove_file(file_path)
 
 
+def test_file_parsing():
+    file_path = create_file_with_urls()
+    file = open(file_path, 'r')
+    valid_urls = image_downloader.file_parser(file)
+
+    file.close()
+    remove_file(file_path)
+
+    if len(valid_urls) != 3:
+        raise Exception("Fail. Not all URLs validated")
+
+
 def create_empty_file():
     path = os.getcwd() + "/test_file.txt"
     open(path, 'a').close()
@@ -57,9 +69,10 @@ def create_empty_file():
 def create_file_with_urls():
     path = os.getcwd() + "/test_file.txt"
     with open(path, 'a') as file:
-        file.write("http://upload.wikimedia.org/wikipedia/commons/f/ff/Picea_likiangensis.jpg")
-        file.write("http://www.bountiful-farms.com/photos/plants/piceafastigiata.jpg")
-        file.write("http://farm1.static.flickr.com/67/175175908_9d19e087c7.jpg")
+        file.write("http://upload.wikimedia.org/wikipedia/commons/f/ff/Picea_likiangensis.jpg" + "\n")
+        file.write("http://www.bountiful-farms.com/photos/plants/piceafastigiata.jpg" + "\n")
+        file.write("http://farm1.static.flickr.com/67/175175908_9d19e087c7.jpg" + "\n")
+        file.close()
 
     return path
 
@@ -75,5 +88,6 @@ if __name__ == '__main__':
     test_check_dir_invalid_path()
     test_open_file_invalid()
     test_open_file_valid()
+    test_file_parsing()
 
     print("Tests passed!")
