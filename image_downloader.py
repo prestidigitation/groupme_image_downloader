@@ -8,15 +8,14 @@ import multiprocessing
 import time
 
 
-def start():
-    """ Main method """
-
-    if len(sys.argv) != 3:
-        print("Invalid arguments")
-        sys.exit()
+def start(t_path_to_file, t_folder_for_images):
+    """ Main method with app algorithm
+    @input: t_path_to_file - string with path to the file with URLs
+            t_folder_for_images - string with path to the folder for downloaded images
+    """
 
     print(get_local_time_string() + ": Checking...")
-    file = open_text_file(sys.argv[1])
+    file = open_text_file(t_path_to_file)
     if file is None:
         sys.exit()
 
@@ -26,13 +25,13 @@ def start():
         print(get_local_time_string() + ": Nothing to download")
         sys.exit()
 
-    folder_path = sys.argv[2]
-    if not check_dir(folder_path):
+    if not check_dir(t_folder_for_images):
         print(get_local_time_string() + ": Failed to create folder for images")
         sys.exit()
 
     print(get_local_time_string() + ": Downloading...")
-    start_download(valid_urls, folder_path)
+    start_download(valid_urls, t_folder_for_images)
+
     print(get_local_time_string() + ": Done.")
 
 
@@ -53,7 +52,7 @@ def open_text_file(t_file_path):
     transcript = None
     try:
         transcript = open(t_file_path, "r")
-    except OSError:
+    except (OSError, IOError):
         print(get_local_time_string() + ": Failed to open file!")
 
     return transcript
@@ -78,14 +77,8 @@ def file_parser(t_file):
 
         try:
             check_result = is_image(current_match)
-        except HTTPError as err:
+        except (HTTPError, URLError, timeout) as err:
             print(current_match + '\n' + "Bad URL or timeout: {0}".format(err))
-            continue
-        except URLError as err:
-            print(current_match + '\n' + "Bad URL or timeout: {0}".format(err))
-            continue
-        except timeout as err:
-            print(current_match + '\n' + "Timeout error: {0}".format(err))
             continue
 
         if check_result is True:
@@ -178,4 +171,10 @@ def img_downloader(t_urls, t_folder):
 
 
 if __name__ == '__main__':
-    start()
+    if len(sys.argv) != 3:
+        print("Invalid arguments")
+        sys.exit()
+
+    path_to_file = sys.argv[1]
+    folder_for_images = sys.argv[2]
+    start(path_to_file, folder_for_images)
