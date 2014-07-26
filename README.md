@@ -3,7 +3,7 @@
 image_downloader
 ========================
 
-Multithread image downloader.
+Multi-thread image downloader.
 
 Python app for parsing a text file for urls, then downloading all images from those urls.
 
@@ -15,3 +15,8 @@ Usage
 * PATH_TO_FILE - absolute path to the txt-file with URLs
 * FOLDER_FOR_IMAGES - absolute path to folder where downloaded images should be saved.
 Folder will be created if it's not exist.
+
+Examples
+=======================
+
+    $ python image_downloader.py /home/my_user_name/urls.txt /home/my_user_name/folder_for_images
