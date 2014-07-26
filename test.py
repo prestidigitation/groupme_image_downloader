@@ -143,10 +143,6 @@ def get_invalid_urls():
     return urls
 
 
-def remove_file(t_path):
-    os.remove(t_path)
-
-
 def get_path_to_folder_for_images():
     path = os.getcwd() + "/test_folder"
     if not os.path.exists(path):
@@ -155,8 +151,18 @@ def get_path_to_folder_for_images():
     return path
 
 
+def remove_file(t_path):
+    try:
+        os.remove(t_path)
+    except Exception as err:
+        print("Error during file remove: {0}".format(err))
+
+
 def remove_folder(t_path):
-    shutil.rmtree(t_path, True)
+    try:
+        shutil.rmtree(t_path, True)
+    except Exception as err:
+        print("Error during folder remove: {0}".format(err))
 
 
 if __name__ == '__main__':
