@@ -174,7 +174,7 @@ def get_path_to_folder_for_images():
 
 
 def remove_file(t_path):
-    if os.path.exist(t_path):
+    if os.path.exists(t_path):
         try:
             os.remove(t_path)
         except Exception as err:
@@ -183,7 +183,7 @@ def remove_file(t_path):
 
 
 def remove_folder(t_path):
-    if os.path.exist(t_path):
+    if os.path.exists(t_path):
         try:
             shutil.rmtree(t_path, True)
         except Exception as err:
