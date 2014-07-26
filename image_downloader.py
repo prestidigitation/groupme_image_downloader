@@ -164,11 +164,20 @@ def img_downloader(t_urls, t_folder):
             urlretrieve(url, path)
         except Exception:
             print(get_local_time_string() + ": Failed to download " + url)
-            os.remove(path)
+            remove_file(path)
             continue
 
         print(get_local_time_string() + ": " + url + " downloaded.")
         time.sleep(2)
+
+
+def remove_file(t_path):
+    if os.path.exists(t_path):
+        try:
+            os.remove(t_path)
+        except Exception as err:
+            print("Error during file remove: {0}".format(err))
+            return
 
 
 if __name__ == '__main__':
