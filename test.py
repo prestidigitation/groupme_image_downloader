@@ -6,16 +6,22 @@ import shutil
 
 
 def test_is_image_valid_url():
+    print("test_is_image_valid_url():")
+
     valid_url = "http://upload.wikimedia.org/wikipedia/commons/f/ff/Picea_likiangensis.jpg"
     assert(image_downloader.is_image(valid_url))
 
 
 def test_is_image_invalid_url():
+    print("test_is_image_invalid_url():")
+
     invalid_url = "http://upload.wikimedia.org/wikipedia/commons/f/ff/Picea_likiangensis.txt"
     assert(not image_downloader.is_image(invalid_url))
 
 
 def test_check_dir_valid_path():
+    print("test_check_dir_valid_path():")
+
     # Check with existent folder
     path = get_path_to_folder_for_images()
     assert(image_downloader.check_dir(path))
@@ -27,6 +33,8 @@ def test_check_dir_valid_path():
 
 
 def test_check_dir_invalid_path():
+    print("test_check_dir_invalid_path():")
+
     fake_folder_path = "/fake/folder"
     assert(not image_downloader.check_dir(fake_folder_path))
 
@@ -34,18 +42,24 @@ def test_check_dir_invalid_path():
     assert(not image_downloader.check_dir(fake_folder))
 
 
-def test_open_file_invalid():
-    fake_file = "/fake/file.txt"
-    assert(not image_downloader.open_text_file(fake_file))
-
-
 def test_open_file_valid():
+    print("test_open_file_valid():")
+
     file_path = create_empty_file()
     assert(image_downloader.open_text_file(file_path))
     remove_file(file_path)
 
 
+def test_open_file_invalid():
+    print("test_open_file_invalid():")
+
+    fake_file = "/fake/file.txt"
+    assert(not image_downloader.open_text_file(fake_file))
+
+
 def test_file_parsing():
+    print("test_file_parsing():")
+
     file_path = create_file_with_urls()
     file = open(file_path, 'r')
     num_of_urls = sum(1 for line in file)
@@ -60,6 +74,8 @@ def test_file_parsing():
 
 
 def test_img_downloader_valid_urls():
+    print("test_img_downloader_valid_urls():")
+
     urls = get_test_urls()
     folder_path = get_path_to_folder_for_images()
     image_downloader.img_downloader(urls, folder_path)
@@ -71,6 +87,8 @@ def test_img_downloader_valid_urls():
 
 
 def test_img_downloader_invalid_urls():
+    print("test_img_downloader_invalid_urls():")
+
     urls = get_invalid_urls()
     folder_path = get_path_to_folder_for_images()
     image_downloader.img_downloader(urls, folder_path)
@@ -82,6 +100,8 @@ def test_img_downloader_invalid_urls():
 
 
 def test_start_download():
+    print("test_start_download():")
+
     urls = get_test_urls()
     folder_path = get_path_to_folder_for_images()
     image_downloader.start_download(urls, folder_path)
@@ -93,6 +113,8 @@ def test_start_download():
 
 
 def test_start():
+    print("test_start():")
+
     file_path = create_file_with_urls()
     file = open(file_path, 'r')
     num_of_urls = sum(1 for line in file)
@@ -170,6 +192,7 @@ def remove_folder(t_path):
 
 
 if __name__ == '__main__':
+    print("Start tests")
     test_is_image_valid_url()
     test_is_image_invalid_url()
 
