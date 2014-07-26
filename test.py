@@ -67,7 +67,7 @@ def test_img_downloader_valid_urls():
     files = os.listdir(folder_path)
     remove_folder(folder_path)
     if len(files) != len(urls):
-        raise Exception("Fail. Not all images downloaded")
+        raise Exception("Fail. Not all images was downloaded")
 
 
 def test_img_downloader_invalid_urls():
@@ -79,6 +79,17 @@ def test_img_downloader_invalid_urls():
     remove_folder(folder_path)
     if len(files) != 0:
         raise Exception("Fail. Image downloaded by invalid link")
+
+
+def test_start_download():
+    urls = get_test_urls()
+    folder_path = get_path_to_folder_for_images()
+    image_downloader.start_download(urls, folder_path)
+
+    files = os.listdir(folder_path)
+    remove_folder(folder_path)
+    if len(files) != len(urls):
+        raise Exception("Fail. Not all images was downloaded")
 
 
 def create_empty_file():
@@ -146,5 +157,7 @@ if __name__ == '__main__':
 
     test_img_downloader_valid_urls()
     test_img_downloader_invalid_urls()
+
+    test_start_download()
 
     print("Tests passed!")
