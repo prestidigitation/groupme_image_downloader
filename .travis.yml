@@ -1,0 +1,14 @@
+language: python
+python:
+    - "3.4"
+# command to install dependencies
+install:
+    - pip install coveralls
+
+# command to run tests
+script:
+    - coverage run --source=image_downloader test.py
+    - coverage report -m
+
+after_success:
+    coveralls --verbose
